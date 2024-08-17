@@ -2,3 +2,4 @@ flask
 pymongo[srv]
 datetime
 python-dotenv
+flask-cors

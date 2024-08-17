@@ -1,25 +1,28 @@
 # app.py
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-
+CORS(app, support_credentials=True)
 # SETUP THE MONGO_CONNECTION
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
+from bson import ObjectId
 # Load environment variables from .env file
 load_dotenv()
 
+
 # Access the MongoDB URI
 mongo_uri = os.getenv('MONGO_URI')
-
+port  = os.getenv("PORT") if os.getenv("PORT") else 5000
 uri = mongo_uri if mongo_uri else "mongodb://localhost:27017"
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
-db = client["linkedin-scrap"]
+db = client["posts"]
 posts_collection = db["posts"]
 
 # Send a ping to confirm a successful connection
@@ -32,7 +35,6 @@ except Exception as e:
 def serialize(posts) :
     for post in posts:
         post["_id"] = str(post["_id"]);
-        print(post["createdAt"])
     return posts
 # Route to get all posts
 @app.route('/posts', methods=['POST'])
@@ -62,10 +64,13 @@ def get_posts():
 @app.route('/update', methods=['POST'])
 def create_post():
     new_post = request.get_json()
-    if not (new_post and new_post.get("_id")):
+
+    if (new_post and new_post.get("_id")):
         new_post["updatedAt"] = datetime.today();
-    post = posts_collection.update(new_post)
-    return jsonify(new_post), 201
+        new_post["_id"] = ObjectId(new_post["_id"] );
+        posts_collection.replace_one({"_id" : new_post["_id"]},new_post); 
+        new_post["_id"] = str(new_post["_id"] );
+    return jsonify(new_post), 201   
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port=port, debug=True)
