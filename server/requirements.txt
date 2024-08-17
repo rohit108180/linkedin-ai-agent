@@ -1,4 +1,4 @@
 flask
 pymongo[srv]
 datetime
-dotenv
+python-dotenv
