@@ -1,0 +1,6 @@
+# Ignore environment variable files
+.env
+./server/.env
+./app/myApp/node_modules
+node_modules
+scrapelinenev
