@@ -37,7 +37,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
             status
         }
         try {
-            const response = await fetch('http://localhost:5000/update', {
+            const response = await fetch('https://linkedin-xtream.onrender.com/update', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

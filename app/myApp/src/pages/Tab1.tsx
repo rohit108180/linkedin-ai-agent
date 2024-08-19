@@ -23,7 +23,7 @@ const PostsList: React.FC = () => {
   const [filter, setFilter] = useState<Object>({});
   const fetchPosts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/posts', {
+      const response = await fetch('https://linkedin-xtream.onrender.com/posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

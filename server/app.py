@@ -36,6 +36,10 @@ def serialize(posts) :
     for post in posts:
         post["_id"] = str(post["_id"]);
     return posts
+
+@app.route("/", methods=['GET'])
+def isAlive():
+    return jsonify("Alive");
 # Route to get all posts
 @app.route('/posts', methods=['POST'])
 def get_posts():
