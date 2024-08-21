@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip , IonIcon} from '@ionic/react';
+import { bookmarkOutline, bookmark } from 'ionicons/icons';
 
 interface Post {
     _id: string;
@@ -27,7 +28,7 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
         Object.keys(post?.href_map).map(key =>{
             post.feed_text = post?.feed_text.replace(key, "<a href="+ post?.href_map[key] +">" + key  + "</a>");
         })
-        if(post?.feed_text.length <= 300) return post?.feed_text;
+        if(!post?.feed_text || post?.feed_text.length <= 300) return post?.feed_text;
         return seeAll ? post?.feed_text : post?.feed_text.slice(0 ,300) + "...";
     }
 
@@ -53,15 +54,16 @@ const PostCard: React.FC<PostCardProps> = ({post}) => {
     <IonCard>
       <IonCardHeader>
         <p><em>{new Date(post?.createdAt).toLocaleDateString()}</em></p>
-        <IonCardTitle><a href={post?.profile}>{post?.poster}</a> <IonChip style={{width:"fit-post?.feed_text"}}>{post?.status}</IonChip></IonCardTitle>
+        <IonCardTitle><a href={post?.profile}>{post?.poster}</a> <IonChip style={{width:"fit-post?.feed_text"}}>{post?.status}</IonChip> <button style={{ background:"transparent", lineHeight:"10px", padding:"10px", borderRadius:"5px"}} onClick={() => updatePostStatus(post, "bookmarked")}><IonIcon icon={post?.status ==="bookmarked" ? bookmark: bookmarkOutline}></IonIcon>
+</button></IonCardTitle>
         <h6>{post?.poster_bio}</h6>
       </IonCardHeader>
       <IonCardContent>
         <p  dangerouslySetInnerHTML={{ __html: getText(post) }}/>
         {!seeAll ?  <p onClick={()=> setSeeAll(true)} style={{color: "white", cursor:"pointer"}}>see more</p> : null}
 
-        
-        <div style={{display:"flex", gap:"1rem", marginTop:"1rem", alignItems:"center"}}> <button style={{ background:"red", lineHeight:"10px", padding:"10px", borderRadius:"5px"}} onClick={() => updatePostStatus(post, "discard")}>discard</button><button style={{ background:"green", lineHeight:"10px", padding:"10px", borderRadius:"5px"}} onClick={() => updatePostStatus(post, "done")}>Done</button></div>
+        {post?.status === "qualified"?
+        <div style={{display:"flex", gap:"1rem", marginTop:"1rem", alignItems:"center"}}> <button style={{ background:"red", lineHeight:"10px", padding:"10px", borderRadius:"5px"}} onClick={() => updatePostStatus(post, "discard")}>discard</button><button style={{ background:"green", lineHeight:"10px", padding:"10px", borderRadius:"5px"}} onClick={() => updatePostStatus(post, "done")}>Done</button></div>: <button style={{ background:"green", lineHeight:"10px", padding:"10px", borderRadius:"5px"}} onClick={() => updatePostStatus(post, "qualified")}>qualified</button>}
       </IonCardContent>
     </IonCard>
   );
