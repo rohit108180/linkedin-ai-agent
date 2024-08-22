@@ -34,7 +34,7 @@ except Exception as e:
 
 def serialize(posts) :
     for post in posts:
-        post["_id"] = str(post["_id"]);
+        post["_id"] = str(post["_id"])
     return posts
 
 @app.route("/", methods=['GET'])
@@ -44,7 +44,7 @@ def isAlive():
 @app.route('/posts', methods=['POST'])
 def get_posts():
     filter = request.get_json()
-    status = filter.get("status", "qualified") if filter  else "qualified";
+    status = filter.get("status")
     if filter and filter.get("date") :
         date_str = filter["date"]
         start_date = datetime.strptime(date_str, '%Y-%m-%d')
@@ -56,7 +56,9 @@ def get_posts():
     # Create the start and end datetime range for the day
     
     posts = serialize(list(posts_collection.find(
-        {"status": status,
+        {"status": {
+            "$in" : [status] if status else ["qualified", "lead", "bookmarked"] ,
+        },
         "createdAt": {
             "$gte": start_date,
             "$lt": end_date
@@ -66,10 +68,11 @@ def get_posts():
 
 # Route to create a new post
 @app.route('/update', methods=['POST'])
-def create_post():
+def update_post():
     new_post = request.get_json()
 
     if (new_post and new_post.get("_id")):
+        new_post["createdAt"] = datetime.strptime(new_post.get("createdAt"), '%Y-%m-%dT%H:%M:%S.000Z')
         new_post["updatedAt"] = datetime.today();
         new_post["_id"] = ObjectId(new_post["_id"] );
         posts_collection.replace_one({"_id" : new_post["_id"]},new_post); 

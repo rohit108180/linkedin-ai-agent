@@ -39,9 +39,6 @@ const PostsList: React.FC = () => {
       let data = await response.json();
       // sort
       data = data.sort((post1: Post, post2: Post) => (new Date(post2.createdAt).getTime() - new Date(post1.createdAt).getTime()));
-
-      console.log(data);
-      console.log(data);
       setPosts(data);
     } catch (error) {
       console.error('Failed to fetch posts:', error);
@@ -69,6 +66,21 @@ const PostsList: React.FC = () => {
       date: value
     })
   };
+
+  const updatePost = (post :Post) =>{
+    console.log(post)
+    let tempPost = structuredClone(posts);
+    tempPost.map( (postOld) =>{
+      if(postOld._id == post._id){
+         return post;
+      }
+      return postOld;
+    })
+    setPosts([
+      post,
+      ...posts.filter(postOld => postOld._id !== post._id)
+    ]);
+  }
   
 
   if (loading) {
@@ -101,6 +113,7 @@ const PostsList: React.FC = () => {
           <PostCard
             key={post._id}
             post={post}
+            updatePost = {updatePost}
           />
         )): "No Posts"}
       </IonContent>
