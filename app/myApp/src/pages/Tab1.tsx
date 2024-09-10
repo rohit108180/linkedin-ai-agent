@@ -12,6 +12,7 @@ interface Post {
   poster_bio: string;
   profile: string;
   feed_text: string;
+  html_feed: string;
   status: string;
   href_map: MyObject;
   createdAt: string;
@@ -29,7 +30,7 @@ const PostsList: React.FC = () => {
   const fetchPosts = async () => {
     setLoading(true)
     try {
-      const response = await fetch('https://linkedin-xtream.onrender.com/posts', {
+      const response = await fetch('https://linx-server-zqc5.onrender.com/posts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .       # Path to the directory containing the Dockerfile
+      dockerfile: Dockerfile
+    image: filter-feed:latest
+    env_file:
+      - .env
+

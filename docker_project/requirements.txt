@@ -1,0 +1,8 @@
+selenium
+beautifulsoup4
+webdriver-manager
+lxml
+pymongo[srv]
+datetime
+python-dotenv
+groq

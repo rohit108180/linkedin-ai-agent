@@ -8,6 +8,7 @@ interface Post {
     poster_bio: string;
     profile: string;
     feed_text: string;
+    html_feed: string;
     status: string;
     href_map: MyObject;
     createdAt: string;
@@ -28,11 +29,12 @@ const PostCard: React.FC<PostCardProps> = ({post, updatePost}) => {
 
     const getText = (post: Post) => {
       let content = post?.feed_text;
+      let htmlContent = post?.html_feed;
         Object.keys(post?.href_map).map(key =>{
             content = content.replace(key, "<a href="+ post?.href_map[key] +" target='_blank'>" + key  + "</a>");
         })
         if(!content || content.length <= 300) return content;
-        return seeAll ? content : content.slice(0 ,300) + "...";
+        return seeAll ? htmlContent || content : content.slice(0 ,300) + "...";
     }
 
     const updatePostStatus = async (post: Post, status: string) =>{
@@ -43,7 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({post, updatePost}) => {
             createdAt: new Date(post.createdAt)
         }
         try {
-            const response = await fetch('https://linkedin-xtream.onrender.com/update', {
+            const response = await fetch('https://linx-server-zqc5.onrender.com/update', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
